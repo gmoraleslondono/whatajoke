@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 import Joke from '../../components/Joke'
 import SearchJokes from '../../components/SearchJokes'
 
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      jokes: [],
+      // jokes: [],
     }
   },
   head() {
@@ -37,44 +37,19 @@ export default {
       ],
     }
   },
-  // load data when starting
-  async created() {
-    // request API using axios
-
-    // API needs headers
-    const config = {
-      headers: {
-        Accept: 'application/json',
-      },
-    }
-
-    try {
-      const res = await axios.get('https://icanhazdadjoke.com/search', config)
-
-      console.log('this is the data', res.data)
-      this.jokes = res.data.results
-    } catch (error) {
-      console.log(error)
-    }
+  computed: {
+    ...mapGetters(['jokes']),
+  },
+  mounted() {
+    this.getJokesList()
   },
   methods: {
-    async searchText(text) {
-      const config = {
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-
-      try {
-        const res = await axios.get(
-          `https://icanhazdadjoke.com/search?term=${text}`,
-          config
-        )
-
-        this.jokes = res.data.results
-      } catch (error) {
-        console.log(error)
-      }
+    ...mapActions(['getJokes', 'getSearchedJokes']),
+    getJokesList() {
+      this.getJokes()
+    },
+    searchText(text) {
+      this.getSearchedJokes(text)
     },
   },
 }

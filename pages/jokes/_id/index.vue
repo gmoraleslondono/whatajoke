@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
     return {
-      joke: {},
+      // joke: {},
     }
   },
   head() {
@@ -28,24 +28,17 @@ export default {
       ],
     }
   },
-  async created() {
-    const config = {
-      headers: {
-        Accept: 'application/json',
-      },
-    }
-
-    try {
-      const res = await axios.get(
-        `https://icanhazdadjoke.com/j/${this.$route.params.id}`,
-        config
-      )
-
-      this.joke = res.data.joke
-      console.log(this.joke)
-    } catch (error) {
-      console.log(error)
-    }
+  computed: {
+    ...mapGetters(['joke']),
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    ...mapActions(['getSingleJoke']),
+    init() {
+      this.getSingleJoke(this.$route.params.id)
+    },
   },
 }
 </script>
